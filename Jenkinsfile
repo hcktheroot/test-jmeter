@@ -2,16 +2,7 @@ pipeline
 {
 agent any
 
-    environment {
-        docker_registry = "github.com"
-        docker_repo = "hcktheroot"
-        target_environment="test"
 
-    }
-
-   options {
-     timestamps()
-   }
 
   stages
    {
@@ -21,7 +12,7 @@ agent any
                 deleteDir() /* clean up our workspace */
                 sh 'git config --global http.sslVerify false'
                 git branch: 'master', url: 'https://github.com/hcktheroot/test-jmeter.git'
-                sh 'ls -la' 
+                sh 'ls -la'
             }
         }
 
