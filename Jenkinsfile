@@ -1,11 +1,6 @@
 pipeline
 {
 agent any
-#    agent {
- #    node {
-       #label 'kube-pod'
-  #   }
-  #  }
  
     environment {
         docker_registry = "github.com"
