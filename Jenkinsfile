@@ -5,7 +5,7 @@ node {
       def dockerHome = tool 'myDocker'
       env.PATH = "${dockerHome}/bin:${env.PATH}"
       sh 'docker --version'
-      sh 'docker build -t Var1:1 .'
+      sh 'docker build -t test1:1 .'
       sh 'docker images ls'
    }
 }
