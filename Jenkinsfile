@@ -1,7 +1,12 @@
 pipeline
 {
-agent docker
-def app
+
+agent {
+        node {
+            label 'docker'
+        }
+    }
+
 
 
   stages
@@ -18,7 +23,7 @@ def app
         }
         stage('Build') {
           steps {
-            app = docker.build("Val1:1")
+            sh 'docker build -t Val1:1 .'
           }
         }
 
