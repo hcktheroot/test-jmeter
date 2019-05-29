@@ -1,66 +1,63 @@
-def label = "worker-${UUID.randomUUID().toString()}"
-
-podTemplate(label: label, containers: [
-  containerTemplate(name: 'gradle', image: 'gradle:4.5.1-jdk9', command: 'cat', ttyEnabled: true),
-  containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
-  containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.8.8', command: 'cat', ttyEnabled: true),
-  containerTemplate(name: 'helm', image: 'lachlanevenson/k8s-helm:latest', command: 'cat', ttyEnabled: true)
-],
-volumes: [
-  hostPathVolume(mountPath: '/home/gradle/.gradle', hostPath: '/tmp/jenkins/.gradle'),
-  hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
-]) {
-  node(label) {
-    def myRepo = checkout scm
-    def gitCommit = myRepo.GIT_COMMIT
-    def gitBranch = myRepo.GIT_BRANCH
-    def shortGitCommit = "${gitCommit[0..10]}"
-    def previousGitCommit = sh(script: "git rev-parse ${gitCommit}~", returnStdout: true)
+pipeline
+{
+    agent {
+     node {
+       label 'kube-pod'
+     }
+    }
  
-    stage('Test') {
-      try {
-        container('gradle') {
-          sh """
-            pwd
-            echo "GIT_BRANCH=${gitBranch}" >> /etc/environment
-            echo "GIT_COMMIT=${gitCommit}" >> /etc/environment
-            gradle test
-            """
+    environment {
+        docker_registry = "github.com"
+        docker_repo = "hcktheroot"
+        target_environment="test"
+        
+    }
+ 
+   options {
+     timestamps()
+   }
+   
+  stages
+   {
+        stage('Checkout')
+        {
+            steps{
+                deleteDir() /* clean up our workspace */
+                sh 'git config --global http.sslVerify false'
+                git branch: 'master', credentialsId: 'git-creds', url: 'https://github.com/hcktheroot/test-jmeter.git'
+            }
         }
-      }
-      catch (exc) {
-        println "Failed to test - ${currentBuild.fullDisplayName}"
-        throw(exc)
-      }
-    }
-    stage('Build') {
-      container('gradle') {
-        sh "gradle build"
-      }
-    }
-    stage('Create Docker images') {
-      container('docker') {
-        withCredentials([[$class: 'UsernamePasswordMultiBinding',
-          credentialsId: 'dockerhub',
-          usernameVariable: 'DOCKER_HUB_USER',
-          passwordVariable: 'DOCKER_HUB_PASSWORD']]) {
-          sh """
-            docker login -u ${DOCKER_HUB_USER} -p ${DOCKER_HUB_PASSWORD}
-            docker build -t namespace/my-image:${gitCommit} .
-            docker push namespace/my-image:${gitCommit}
-            """
+ 
+        stage('SonarQube Analysis')
+        {
+             steps{
+               println 'Sonar Reporting'
+            }
         }
-      }
+       
+        stage('Build & Dockerize')
+        {
+            steps{
+                 script{
+                     sh 'mvn clean package docker:build docker:push -Dmaven.test.skip=true -Dmaven.wagon.http.ssl.insecure=true -Djavax.net.ssl.trustStore=/opt/trust.jks -Dmaven.wagon.http.ssl.allowall=true -Dmaven.wagon.http.ssl.ignore.validity.dates=true -Ddocker.push.registry=github.com -Ddocker.repo=hcktheroot'
+                 
+                 }
+                    
+                 }
+        }
+ 
+        stage('Functional Testing')
+        {
+             steps{
+                 println 'Functional Testing'
+            }
+        }
+ 
+   }
+post {
+        always {
+            print 'Done !!'
+        }
     }
-    stage('Run kubectl') {
-      container('kubectl') {
-        sh "kubectl get pods"
-      }
-    }
-    stage('Run helm') {
-      container('helm') {
-        sh "helm list"
-      }
-    }
-  }
 }
+ 
