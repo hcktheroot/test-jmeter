@@ -14,7 +14,7 @@ agent any
                 sh 'git config --global http.sslVerify false'
                 git branch: 'master', url: 'https://github.com/hcktheroot/test-jmeter.git'
                 sh 'ls -la'
-                sh 'which docker'
+                sh 'docker images ls'
             }
         }
         stage('Build') {
