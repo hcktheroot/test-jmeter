@@ -1,6 +1,6 @@
 pipeline
 {
-agent any
+agent docker
 
 
 
@@ -19,7 +19,7 @@ agent any
         }
         stage('Build') {
           steps {
-            sh "docker build -t Val1 ."
+            sh "docker build -t Val1:1 ."
           }
         }
 
