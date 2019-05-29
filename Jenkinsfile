@@ -13,11 +13,12 @@ agent any
                 sh 'git config --global http.sslVerify false'
                 git branch: 'master', url: 'https://github.com/hcktheroot/test-jmeter.git'
                 sh 'ls -la'
+                sh 'which docker'
             }
         }
         stage('Build') {
           steps {
-            sh "docker build -t Val1 . -v jenkins-data:/var/jenkins_home -v $(which docker):/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock"
+            sh "docker build -t Val1 ."
           }
         }
 
