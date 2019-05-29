@@ -1,17 +1,64 @@
-node {
-   stage('Preparation') { // for display purposes
-      // Get some code from a GitHub repository
-      git 'https://github.com/hcktheroot/test-jmeter.git'
-      def dockerHome = tool 'myDocker'
-      env.PATH = "${dockerHome}/bin:${env.PATH}"
+pipeline
+{
+   agent any
+
+   environment {
+       docker_registry = "docker.com"
+       docker_repo = "hck-jmeter"
+       target_environment="test-apps"
 
    }
-   stage('Build') {
-   steps {
-   script{
-    image=docker.build("test:1");
-    println "New image id, " + image.id
-   }
-   }
+
+  options {
+    timestamps()
+  }
+
+ stages
+  {
+       stage('Checkout')
+       {
+           steps{
+               deleteDir() /* clean up our workspace */
+               sh 'git config --global http.sslVerify false'
+               git branch: 'master', credentialsId: 'git-creds', url: 'https://github.com/hcktheroot/test-jmeter.git'
+           }
+       }
+
+       stage('SonarQube Analysis')
+       {
+            steps{
+              println 'Sonar Reporting'
+           }
+       }
+
+       stage('Build & Dockerize')
+       {
+           steps{
+                script{
+                    sh 'mvn clean package docker:build docker:push -Dmaven.test.skip=true -Dmaven.wagon.http.ssl.insecure=true -Djavax.net.ssl.trustStore=/opt/trust.jks -Dmaven.wagon.http.ssl.allowall=true -Dmaven.wagon.http.ssl.ignore.validity.dates=true -Ddocker.push.registry=docker.com -Ddocker.repo=hcktheroot/test-jmeter'
+
+                }
+
+                }
+       }
+
+       stage('Functional Testing')
+       {
+            steps{
+                println 'Functional Testing'
+           }
+       }
+
+       stage('Security Scanning')
+       {
+            steps{
+             println 'Scanning !!'
+           }
+       }
+  }
+post {
+       always {
+           print 'Done !!'
+       }
    }
 }
