@@ -36,7 +36,7 @@ pipeline
        {
            agent { docker 'M3'}
            steps{
-                echo 'hello Maven'
+                println 'hello Maven'
                 sh 'mvn --version'
                 sh 'mvn clean package docker:build docker:push -Dmaven.test.skip=true -Dmaven.wagon.http.ssl.insecure=true -Djavax.net.ssl.trustStore=/opt/trust.jks -Dmaven.wagon.http.ssl.allowall=true -Dmaven.wagon.http.ssl.ignore.validity.dates=true -Ddocker.push.registry=docker.com -Ddocker.repo=hcktheroot/test-jmeter'
               }
