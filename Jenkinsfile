@@ -2,7 +2,7 @@ pipeline
 {
     agent {
      node {
-       label 'kube-pod'
+       #label 'kube-pod'
      }
     }
  
