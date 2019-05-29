@@ -4,8 +4,8 @@ node {
       git 'https://github.com/jglick/simple-maven-project-with-tests.git'
       def dockerHome = tool 'myDocker'
       env.PATH = "${dockerHome}/bin:${env.PATH}"
-      sh 'sudo systemctl start docker'
-      sh 'sudo systemctl enable docker'
+      sh 'systemctl start docker'
+      sh 'systemctl enable docker'
       sh 'docker images ls'
    }
 }
