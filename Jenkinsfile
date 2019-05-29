@@ -1,7 +1,7 @@
 pipeline
 {
 agent docker
-
+def app
 
 
   stages
@@ -14,12 +14,11 @@ agent docker
                 sh 'git config --global http.sslVerify false'
                 git branch: 'master', url: 'https://github.com/hcktheroot/test-jmeter.git'
                 sh 'ls -la'
-                sh 'docker images ls'
             }
         }
         stage('Build') {
           steps {
-            sh "docker build -t Val1:1 ."
+            app = docker.build("Val1:1")
           }
         }
 
