@@ -15,6 +15,11 @@ agent any
                 sh 'ls -la'
             }
         }
+        stage('Build') {
+          steps {
+            sh "docker build -t Val1 ."
+          }
+        }
 
         stage('SonarQube Analysis')
         {
