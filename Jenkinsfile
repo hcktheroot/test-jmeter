@@ -1,10 +1,7 @@
 pipeline
 {
-   agent any
-   tools {
-    maven 'M3'
-    docker 'myDocker'
-  }
+   agent none
+
 
    environment {
        docker_registry = "docker.com"
