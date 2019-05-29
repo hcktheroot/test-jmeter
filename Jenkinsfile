@@ -10,4 +10,12 @@ node {
       sh 'docker build -t test1:1 .'
       sh 'docker images ls'
    }
+   stage('Build') {
+   steps {
+   script{
+    image=docker.build("test:1");
+    println "New image id, " + image.id
+   }
+   }
+   }
 }
