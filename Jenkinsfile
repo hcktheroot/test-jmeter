@@ -17,7 +17,7 @@ agent any
         }
         stage('Build') {
           steps {
-            sh "docker build -t Val1 . -v jenkins-data:/var/jenkins_home -v $(which docker):/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock -v "$HOME":/home/jenkinsci/blueocean"
+            sh "docker build -t Val1 . -v jenkins-data:/var/jenkins_home -v $(which docker):/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock -v $HOME:/home/jenkinsci/blueocean"
           }
         }
 
