@@ -1,7 +1,6 @@
 pipeline
 {
-   agent none
-
+   agent any
 
    environment {
        docker_registry = "docker.com"
@@ -32,14 +31,19 @@ pipeline
            }
        }
 
-       stage('Build & Dockerize')
+       stage('Docker Build')
        {
-           agent { docker 'M3'}
            steps{
-                println 'hello Maven'
-                sh 'mvn --version'
-                sh 'mvn clean package docker:build docker:push -Dmaven.test.skip=true -Dmaven.wagon.http.ssl.insecure=true -Djavax.net.ssl.trustStore=/opt/trust.jks -Dmaven.wagon.http.ssl.allowall=true -Dmaven.wagon.http.ssl.ignore.validity.dates=true -Ddocker.push.registry=docker.com -Ddocker.repo=hcktheroot/test-jmeter'
-              }
+                script{
+                def docker_version = 'myDocker'
+                withEnv( ["PATH+DOCKER=${tool docker_version}/bin"] ) {
+                    sh 'docker --version'
+                    sh 'docker build -t hck-jmeter:3 .'
+                    sh 'docker push hcktheroot/hck-jmeter:3'
+                    }
+                }
+
+                }
        }
 
        stage('Functional Testing')
