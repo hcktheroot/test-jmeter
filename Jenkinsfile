@@ -12,7 +12,7 @@ pipeline {
         sh 'git config --global http.sslVerify false'
         git credentialsId: 'git-creds', url: 'https://github.com/hcktheroot/test-jmeter.git'
         println 'app ' + $GIT_BRANCH
-        println 'bbb  + $GIT_COMMIT
+        println 'bbb ' + $GIT_COMMIT
       }
     }
     stage('Building image') {
