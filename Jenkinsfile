@@ -1,68 +1,45 @@
-pipeline
-{
-   agent any
-
-   environment {
-       docker_registry = "docker.com"
-       docker_repo = "hck-jmeter"
-       target_environment="test-apps"
-
-   }
-
-  options {
-    timestamps()
+pipeline {
+  environment {
+    registry = "hcktheroot/hck-jmeter-docker"
+    registryCredential = 'docker-hub'
+    dockerImage = ''
   }
-
- stages
-  {
-       stage('Checkout')
-       {
-           steps{
-               deleteDir() /* clean up our workspace */
-               sh 'git config --global http.sslVerify false'
-               git branch: 'master', credentialsId: 'git-creds', url: 'https://github.com/hcktheroot/test-jmeter.git'
-           }
-       }
-
-       stage('SonarQube Analysis')
-       {
-            steps{
-              println 'Sonar Reporting'
-           }
-       }
-
-       stage('Docker Build')
-       {
-           steps{
-                script{
-                def docker_version = 'myDocker'
-                withEnv( ["PATH+DOCKER=${tool docker_version}/bin"] ) {
-                    sh 'docker --version'
-                    sh 'docker build -t hck-jmeter:3 .'
-                    sh 'docker push hcktheroot/hck-jmeter:3'
-                    }
-                }
-
-                }
-       }
-
-       stage('Functional Testing')
-       {
-            steps{
-                println 'Functional Testing'
-           }
-       }
-
-       stage('Security Scanning')
-       {
-            steps{
-             println 'Scanning !!'
-           }
-       }
+  agent any
+  stages {
+    stage('Cloning Git') {
+      steps {
+        deleteDir() /* clean up our workspace */
+        sh 'git config --global http.sslVerify false'
+        git credentialsId: 'git-creds', url: 'https://github.com/hcktheroot/test-jmeter.git'
+        println 'app - $(GIT_BRANCH)'
+        println 'bbb - $(GIT_COMMIT)'
+      }
+    }
+    stage('Building image') {
+      steps{
+        script {
+          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+        }
+      }
+    }
+    stage('Deploy Image') {
+      steps{
+        script {
+          docker.withRegistry( '', registryCredential ) {
+            dockerImage.push()
+          }
+        }
+      }
+    }
+    stage('Remove Unused docker image') {
+      steps{
+        sh "docker rmi $registry:$BUILD_NUMBER"
+      }
+    }
   }
-post {
-       always {
-           print 'Done !!'
-       }
-   }
+  post {
+         always {
+             print 'Done !!'
+         }
+     }
 }
