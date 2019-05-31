@@ -1,4 +1,5 @@
 pipeline {
+def local_branch
   environment {
     registry = "hcktheroot/hck-jmeter-docker"
     registryCredential = 'docker-hub'
@@ -23,7 +24,7 @@ pipeline {
         println 'GIT_COMMITTER_NAME' + env.GIT_COMMITTER_NAME
         println 'GIT_COMMITTER_EMAIL' + env.GIT_COMMITTER_EMAIL
 
-        def local_branch= env.GIT_LOCAL_BRANCH
+        local_branch = env.GIT_LOCAL_BRANCH
         println '${local_branch}'
         sh 'perl -pi -e \'s/JMXFILENAME/${local_branch}\' Dockerfile'
         sh 'cat Dockerfile'
