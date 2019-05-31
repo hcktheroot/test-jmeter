@@ -11,8 +11,8 @@ pipeline {
         deleteDir() /* clean up our workspace */
         sh 'git config --global http.sslVerify false'
         git credentialsId: 'git-creds', url: 'https://github.com/hcktheroot/test-jmeter.git'
-        println 'app ' + $GIT_BRANCH
-        println 'bbb ' + $GIT_COMMIT
+        println 'app ' + env.GIT_BRANCH
+        println 'bbb ' + env.GIT_COMMIT
       }
     }
     stage('Building image') {
