@@ -27,8 +27,7 @@ pipeline {
           localbranch = env.GIT_LOCAL_BRANCH
           println '$localbranch}'
           println 'env.localbranch'
-          sh 'export localname=env.GIT_LOCAL_BRANCH'
-          sh 'sed -i -e "s/JMXFILENAME/$localname/g" Dockerfile'
+          sh 'sed -i -e "s/JMXFILENAME/" + env.GIT_LOCAL_BRANCH + "/g" Dockerfile'
           sh 'cat Dockerfile'
           }
       }
