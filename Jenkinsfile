@@ -25,8 +25,8 @@ pipeline {
           println 'GIT_COMMITTER_NAME' + env.GIT_COMMITTER_NAME
           println 'GIT_COMMITTER_EMAIL' + env.GIT_COMMITTER_EMAIL
           localbranch = env.GIT_LOCAL_BRANCH
-          println '$local_branch'
-          sh 'perl -pi -e \'s/JMXFILENAME/$local_branch\' Dockerfile'
+          println '${local_branch}'
+          sh 'perl -i -e \'s/JMXFILENAME/${local_branch}\' *'
           sh 'cat Dockerfile'
           }
       }
