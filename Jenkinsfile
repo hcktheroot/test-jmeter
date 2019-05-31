@@ -25,7 +25,7 @@ pipeline {
 
         echo '$(local_branch)= env.GIT_LOCAL_BRANCH'
         println '$local_branch'
-        sh 'perl -pi -e 's/JMXFILENAME/env.GIT_LOCAL_BRANCH' Dockerfile'
+        sh "perl -pi -e 's/JMXFILENAME/env.GIT_LOCAL_BRANCH' Dockerfile"
         sh 'cat Dockerfile'
       }
     }
