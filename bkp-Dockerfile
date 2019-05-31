@@ -4,8 +4,8 @@ MAINTAINER Vamsi Nagavarapu
 
 # Install wget & JRE
 RUN apk upgrade --update && \
-	apk add wget openjdk7-jre unzip
-
+	apk add wget openjdk7-jre unzip 
+ 
 # Install jmeter
 RUN   mkdir /jmeter \
 	&& cd /jmeter/ \
@@ -20,7 +20,7 @@ RUN   mkdir /jmeter \
 RUN mkdir /jmeter/apache-jmeter-2.13/scripts \
 	&& mkdir /jmeter/apache-jmeter-2.13/results
 
-ENV SCRIPT_NAME JMXFILENAME.jmx
+ENV SCRIPT_NAME jmxfiles/sampletest.jmx	
 
 COPY $SCRIPT_NAME /jmeter/apache-jmeter-2.13/scripts
 
@@ -33,3 +33,4 @@ ENV RESULTS_FOLDER $JMETER_HOME/results
 ENV PATH $JMETER_HOME/bin:$PATH
 
 ENTRYPOINT $JMETER_HOME/bin/jmeter -Jjmeter.save.saveservice.print_field_names=true -Jduration=$duration -n -t=$SCRIPTS_FOLDER/$SCRIPT_NAME -l=$RESULTS_FOLDER/test_results.csv
+

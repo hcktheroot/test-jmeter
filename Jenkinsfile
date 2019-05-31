@@ -22,6 +22,11 @@ pipeline {
         println 'GIT_AUTHOR_EMAIL' + env.GIT_AUTHOR_EMAIL
         println 'GIT_COMMITTER_NAME' + env.GIT_COMMITTER_NAME
         println 'GIT_COMMITTER_EMAIL' + env.GIT_COMMITTER_EMAIL
+
+        echo '$(local_branch)= env.GIT_LOCAL_BRANCH'
+        println '$local_branch'
+        sh 'perl -pi -e 's/JMXFILENAME/env.GIT_LOCAL_BRANCH' Dockerfile'
+        sh 'cat Dockerfile'
       }
     }
     stage('Building image') {
