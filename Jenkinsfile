@@ -26,7 +26,7 @@ pipeline {
           println 'GIT_COMMITTER_EMAIL' + env.GIT_COMMITTER_EMAIL
           localbranch = env.GIT_LOCAL_BRANCH
           println '$localbranch}'
-          println 'apple - ' + env.localbranch
+          println 'apple - ' + env.GIT_LOCAL_BRANCH
           sh 'sed -i -e "s/JMXFILENAME/"' + env.GIT_LOCAL_BRANCH + '"/g" Dockerfile'
           sh 'cat Dockerfile'
           }
