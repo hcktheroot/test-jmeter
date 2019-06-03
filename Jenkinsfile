@@ -59,8 +59,7 @@ pipeline {
             script{
                sh 'sed -i -e "s/BRANCH/"' + env.GIT_LOCAL_BRANCH + '"/g" deployment/jmeter-job.yaml'
                sh 'cat deployment/jmeter-job.yaml'
-               sh 'kubectl apply -f deployment/*.yaml'
-               sh 'kubectl get pods'
+               
             }
         }
     }
