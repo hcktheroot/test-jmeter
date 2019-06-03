@@ -57,7 +57,7 @@ pipeline {
                sh 'cat deployment/jmeter-job.yaml'
                sh 'kubectl apply -f deployment/*.yaml'
                sh 'kubectl get pods'
-
+            }
         }
     }
     stage('Remove Unused docker image') {
