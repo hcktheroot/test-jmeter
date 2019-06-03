@@ -48,7 +48,6 @@ pipeline {
         }
       }
     }
-    ##dockerImage = docker.build registry + ":" + env.GIT_LOCAL_BRANCH + "_$BUILD_NUMBER"
 
     stage('Deploy to Kubernetes Cluster ')
     {
@@ -57,7 +56,6 @@ pipeline {
                sh 'sed -i -e "s/BRANCH/"' + env.GIT_LOCAL_BRANCH + '"/g" *.yaml'
                sh 'cat jmeter-job.yaml'
                kubernetesDeploy(
-               #kubeconfigId: 'kubeconfig-id',
                configs: 'deployment/*.yml',
                enableConfigSubstitution: true
                             )
