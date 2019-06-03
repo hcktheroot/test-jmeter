@@ -5,7 +5,11 @@ pipeline {
     dockerImage = ''
     localbranch = ''
   }
-  agent any
+  agent {
+  node {
+    label 'kube-pod'
+  }
+  }
   stages {
     stage('Cloning Git') {
       steps {
