@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: jmeter-client-load
+spec:
+  parallelism: 1
+  template:
+    metadata:
+      labels:
+        name: jmeter-client-load
+        role: worker
+    spec:
+      containers:
+        - name: client-get
+          image: hcktheroot/hck-jmeter:BRANCH_BUILDNUMBER
+          env:
+          - name: duration
+            value: "3"
+          volumeMounts:
+          - name: results-data
+            mountPath: /jmeter/apache-jmeter-2.13/results
+          volumeMounts:
+          - name: results-data
+            mountPath: /results
+
+      restartPolicy: Never
+      volumes:
+      - name: results-data
+        emptyDir: {}

@@ -35,7 +35,7 @@ pipeline {
     stage('Building image') {
       steps{
         script {
-          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+          dockerImage = docker.build registry + ":" + env.GIT_LOCAL_BRANCH + "_$BUILD_NUMBER"
         }
       }
     }
@@ -47,6 +47,25 @@ pipeline {
           }
         }
       }
+    }
+
+    stage('Deploy to Kubernetes Cluster ')
+    {
+        steps{
+            script{
+               pom = readMavenPom file: 'pom.xml'
+               project_version=pom.properties['disclosure.project.version']
+
+               withEnv(["project_version=$project_version"])
+               {
+               kubernetesDeploy(
+               kubeconfigId: 'kubeconfig-id',
+               configs: 'deployment/*.yml',
+               enableConfigSubstitution: true
+                            )
+               }
+                }
+        }
     }
     stage('Remove Unused docker image') {
       steps{
