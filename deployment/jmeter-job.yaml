@@ -12,7 +12,7 @@ spec:
     spec:
       containers:
         - name: client-get
-          image: hcktheroot/hck-jmeter:BRANCH_BUILDNUMBER
+          image: hcktheroot/hck-jmeter:BRANCH
           env:
           - name: duration
             value: "3"

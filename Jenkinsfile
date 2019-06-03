@@ -35,7 +35,7 @@ pipeline {
     stage('Building image') {
       steps{
         script {
-          dockerImage = docker.build registry + ":" + env.GIT_LOCAL_BRANCH + "_$BUILD_NUMBER"
+          dockerImage = docker.build registry + ":" + env.GIT_LOCAL_BRANCH
         }
       }
     }
@@ -48,22 +48,20 @@ pipeline {
         }
       }
     }
+    ##dockerImage = docker.build registry + ":" + env.GIT_LOCAL_BRANCH + "_$BUILD_NUMBER"
 
     stage('Deploy to Kubernetes Cluster ')
     {
         steps{
             script{
-               pom = readMavenPom file: 'pom.xml'
-               project_version=pom.properties['disclosure.project.version']
-
-               withEnv(["project_version=$project_version"])
-               {
+               sh 'sed -i -e "s/BRANCH/"' + env.GIT_LOCAL_BRANCH + '"/g" *.yaml'
+               sh 'cat jmeter-job.yaml'
                kubernetesDeploy(
-               kubeconfigId: 'kubeconfig-id',
+               #kubeconfigId: 'kubeconfig-id',
                configs: 'deployment/*.yml',
                enableConfigSubstitution: true
                             )
-               }
+
                 }
         }
     }
