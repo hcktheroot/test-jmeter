@@ -5,11 +5,7 @@ pipeline {
     dockerImage = ''
     localbranch = ''
   }
-  agent {
-  node {
-    label 'kube-pod'
-  }
-  }
+  agent any
   stages {
     stage('Cloning Git') {
       steps {
@@ -59,7 +55,7 @@ pipeline {
             script{
                sh 'sed -i -e "s/BRANCH/"' + env.GIT_LOCAL_BRANCH + '"/g" deployment/jmeter-job.yaml'
                sh 'cat deployment/jmeter-job.yaml'
-               
+
             }
         }
     }
