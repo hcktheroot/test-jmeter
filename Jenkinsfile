@@ -53,8 +53,8 @@ pipeline {
     {
         steps{
             script{
-               sh 'sed -i -e "s/BRANCH/"' + env.GIT_LOCAL_BRANCH + '"/g" *.yaml'
-               sh 'cat jmeter-job.yaml'
+               sh 'sed -i -e "s/BRANCH/"' + env.GIT_LOCAL_BRANCH + '"/g" deployment/jmeter-job.yaml'
+               sh 'cat deployment/jmeter-job.yaml'
                kubernetesDeploy(
                configs: 'deployment/*.yml',
                enableConfigSubstitution: true
